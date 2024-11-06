@@ -1,4 +1,5 @@
 import pymongo
+import traceback
 from fastapi import Request
 
 from dto.request import LnkdRequestDto, LnkdResponseDto
@@ -6,6 +7,9 @@ from dao.lnkd_requests import LnkdRequestDao, RequestStatus
 from services.auth_service import AuthService
 
 from config.client_config import lnkd_request_db
+from config.queue import QueuePublishService
+from config.logger import logger
+from common_constants.service_constants import SCRAPING_QUEUE
 from exceptions.custom_exceptions import ResourceNotFoundException
 
 class RequestService(AuthService):
@@ -41,9 +45,9 @@ class RequestService(AuthService):
             lnkd_password=lnkd_request.lnkd_password
         )
         try:
-            # TODO: Push to some queue
-            pass
+            QueuePublishService(SCRAPING_QUEUE).publish(doc.lnkd_request_id)
         except:
+            logger.error(traceback.format_exc())
             doc.status = RequestStatus.FAILED
             doc.status_message = "Failed to Queue"
         lnkd_request_db().insert_one(doc.model_dump(mode='python'))
