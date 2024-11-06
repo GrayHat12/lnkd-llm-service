@@ -1,6 +1,6 @@
 import {MongoClient} from "mongodb";
 
-const MONGO_URI = "mongodb://localhost:27017"
+const MONGO_URI = "mongodb://mongodb:27017"
 
 const client = await new MongoClient(MONGO_URI).connect()
 

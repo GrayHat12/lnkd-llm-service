@@ -1,5 +1,5 @@
 import { LinkedInScraper } from "./linkedin.js";
-import { connect } from 'amqplib/callback_api';
+import { connect } from 'amqplib/callback_api.js';
 import { lnkd_requests_collection } from "./mongodb.js";
 
 /**
@@ -92,7 +92,7 @@ async function callback(channel, queue, msg) {
     return success;
 }
 
-connect('amqp://localhost', function (error0, connection) {
+connect('amqp://rabbitmq', function (error0, connection) {
     if (error0) {
         throw error0;
     }

@@ -1,6 +1,6 @@
 from ollama import Client
 
-llm = Client(host="localhost")
+llm = Client(host="ollama")
 
 def prompt_llm(doc: dict):
     PROMPT = "I want to send a personalized LinkedIn connection request. Here is the information about the person I'm connecting with:\n"

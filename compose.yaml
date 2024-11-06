@@ -1,0 +1,73 @@
+services:
+    mongodb:
+        image: mongo
+        ports:
+            - "27017:27017"
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 10s
+    ollama:
+        image: ollama/ollama
+        ports:
+            - "11434:11434"
+        volumes:
+            - "ollama:/root/.ollama"
+        healthcheck:
+            test: ollama --version || exit 1
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 10s
+    rabbitmq:
+        image: rabbitmq:4.0-management
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        healthcheck:
+            test: rabbitmq-diagnostics -q ping
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 10s
+
+    lnkd-prompt-service:
+        build: lnkd-llm-service
+        container_name: prompt_container
+        depends_on:
+            mongodb:
+                condition: service_healthy
+                restart: true
+            ollama:
+                condition: service_healthy
+                restart: true
+            rabbitmq:
+                condition: service_healthy
+                restart: true
+    lnkd-scraping-service:
+        build: scraping-service
+        container_name: scraping_container
+        depends_on:
+            mongodb:
+                condition: service_healthy
+                restart: true
+            rabbitmq:
+                condition: service_healthy
+                restart: true
+    bff:
+        build: bff
+        container_name: bff_container
+        ports:
+            - "8080:8080"
+        depends_on:
+            mongodb:
+                condition: service_healthy
+                restart: true
+            rabbitmq:
+                condition: service_healthy
+                restart: true
+
+volumes:
+    ollama:

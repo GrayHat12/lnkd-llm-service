@@ -6,7 +6,7 @@ from pymongo import ReturnDocument
 from llm_service import prompt_llm
 from db import lnkd_requests_collection
 
-connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq"))
 channel = connection.channel()
 
 class QueueService:
