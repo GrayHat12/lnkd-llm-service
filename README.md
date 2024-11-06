@@ -138,3 +138,36 @@ I've also attached some `/docs` and `/redoc` images in `/images`.
 * [Docs](./images/docs.pdf)
 * [Redoc](./images/redoc.pdf)
 * [Docker](./images/container.png)
+
+## Cost
+
+I have mostly only had to estimate costs for AWS Lambdas in my professional experience, but i'll try this one. I'll be assuming AWS cloud provider for cost estimation here. So ECS EC2 for my services.
+
+Here we can primarily divide the cost in our services :
+- BFF:
+  - Low resource.
+  - Potentially `t3.micro` instance would suffice for 5 requests a day
+  - `Cost would be 0.0119 * 30 * 24 = 8.568 USD`
+- Scraping Service
+  - Medium to High resource.
+  - Potentially `m6gd.medium` instance. Althout we can do with a smaller machine for just 5 requests a day.
+  - `Cost would be 0.032 * 30 * 24 = 23.04 USD`
+- Prompt Service
+  - Very low resource.
+  - Potentially `t3.nano` instance would suffice for 5 requests a day
+  - `Cost would be 0.0056 * 30 * 24 = 4.032 USD`
+- MongoDB
+  - I'm not going to be estimating mongodb cost here. Will depend on the data and probably be an ever growing cost.
+- RabbitMQ
+  - We could estimate rabbit mq like the above services as well considering only 5 incoming requests. But I'm thinking let's take `https://aws.amazon.com/amazon-mq/pricing/` for a better idea incase we scale.
+  - Considering `mq.t3.micro` instance for just 5 requests a day.
+  - `Cost would be 0.02704 * 30 * 24 = 19.4688 USD`
+- Ollama Docker
+  - High Resource
+  - Considering the cheapest gpu enabled ec2 instances `g4dn.xlarge` since this will be running an llm. Might be able to reduct it since we're already processing requests asynchronously and if we are fine with losing some latency.
+  - `Cost would be 0.614 * 30 * 24 = 442.08 USD`
+
+
+Total Cost comes out to be : `8.568 + 23.04 + 4.032 + 19.4688 + 442.08 = 497.1888` which we can safely round off to `500 USD` considering all things we missed like network operations, vpc costs, db cost etc.
+
+If I were taking this up, I'd probably remove some docker images and instead integrate some of the pub/sub services using `AWS Lambdas + SQS` instead. This would make it such that we only pay for the 5 requests a day and not have to keep a running service 24x7. The EC2 solution is better at scale. For 5 calls a day, Lambda + SQS would be a more efficient solution. But major cost would still be with the LLM container.
