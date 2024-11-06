@@ -64,7 +64,7 @@ async function callback(channel, queue, msg) {
     catch(err) {
         console.error("Some error occured");
         console.error(err);
-        channel.ack(msg);
+        channel.reject(msg, true);
         return "Failed";
     }
     let success = "Failed"
@@ -83,11 +83,11 @@ async function callback(channel, queue, msg) {
             }
         })
         success = "Sucess"
+        channel.ack(msg);
     } catch(err) {
         console.error("Some error occured when scraping");
         console.error(err);
-    } finally {
-        channel.ack(msg);
+        channel.reject(msg, true);
     }
     return success;
 }
