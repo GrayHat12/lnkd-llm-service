@@ -1,0 +1,5 @@
+from ulid import ULID
+
+PHONE_PATTERN = r"^([7-9][0-9]{9})$"
+ID_PATTERN = r"^[0-7][0-9A-HJKMNP-TV-Z]{25}$"
+MASKED_ID = "00000000000000000000000000"

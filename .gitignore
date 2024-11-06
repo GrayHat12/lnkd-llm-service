@@ -1,0 +1,5 @@
+node_modules/
+pnpm-lock.yaml
+.conf
+.venv/
+__pycache__/

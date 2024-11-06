@@ -1,0 +1,6 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic[email]==2.5.1
+python-ulid==3.0.0
+pymongo==4.4
+asgi-correlation-id==4.3.4
