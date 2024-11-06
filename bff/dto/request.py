@@ -7,7 +7,7 @@ class LnkdRequestDto(BaseModel):
     lnkd_username: str = Field(...) # should be encrypted ideally, not doing it here, considering it out of scope for the assignment
     lnkd_password: str = Field(...) # should be encrypted ideally, not doing it here, considering it out of scope for the assignment
 
-    tagret_profile: str = Field(...)
+    tagret_profile: str = Field(..., description="For a profile https://www.linkedin.com/in/grayhat, the target_profile value will be grayhat")
 
 class LnkdResponseDto(BaseLnkdRequestModel):
     pass

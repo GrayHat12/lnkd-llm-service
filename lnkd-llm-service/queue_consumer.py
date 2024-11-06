@@ -6,19 +6,18 @@ from pymongo import ReturnDocument
 from llm_service import prompt_llm
 from db import lnkd_requests_collection
 
-connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq"))
-channel = connection.channel()
-
 class QueueService:
     def __init__(self, queue_name: str):
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq"))
+        self.channel = self.connection.channel()
         self.queue_name = queue_name
-        channel.queue_declare(queue=queue_name)
+        self.channel.queue_declare(queue=queue_name)
 
 class QueueConsumerService(QueueService):
 
     def __init__(self, queue_name):
         super().__init__(queue_name)
-        channel.basic_consume(queue="llm_queue", auto_ack=False, on_message_callback=self.on_message)
+        self.channel.basic_consume(queue="llm_queue", auto_ack=False, on_message_callback=self.on_message)
 
     def on_message(self, channel: Channel, method: pika.spec.Basic.Deliver, properties: pika.spec.BasicProperties, body: bytes):
         try:
@@ -60,8 +59,8 @@ class QueueConsumerService(QueueService):
             }, upsert=False)
 
     def start_consuming(self):
-        channel.basic_qos(prefetch_count=1)
-        channel.start_consuming()
+        self.channel.basic_qos(prefetch_count=1)
+        self.channel.start_consuming()
     
     def stop_consuming(self):
-        channel.stop_consuming()
+        self.channel.stop_consuming()
