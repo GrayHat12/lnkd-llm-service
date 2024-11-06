@@ -55,12 +55,12 @@ class QueueConsumerService(QueueService):
                 "$set": {
                     "status": 6,
                     "status_message": "Something went wrong when in the prompt service",
-                    "message": message
+                    "message": None
                 }
             }, upsert=False)
 
     def start_consuming(self):
-        channel.basic_qos(prefetch_count=2)
+        channel.basic_qos(prefetch_count=1)
         channel.start_consuming()
     
     def stop_consuming(self):

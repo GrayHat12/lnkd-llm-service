@@ -32,7 +32,7 @@ class RequestService(AuthService):
             cursor.skip(limit * (page - 1))
             cursor.limit(limit)
         
-        return [LnkdRequestDto.model_validate(doc) for doc in cursor]
+        return [LnkdResponseDto.model_validate(doc) for doc in cursor]
 
     def create_request(self, lnkd_request: LnkdRequestDto, request: Request):
         doc = LnkdRequestDao(

@@ -64,7 +64,7 @@ async function callback(channel, queue, msg) {
     catch(err) {
         console.error("Some error occured");
         console.error(err);
-        channel.reject(msg, true);
+        channel.reject(msg, false);
         return "Failed";
     }
     let success = "Failed"
@@ -84,6 +84,10 @@ async function callback(channel, queue, msg) {
         })
         success = "Sucess"
         channel.ack(msg);
+        channel.assertQueue("llm_queue", {
+            durable: false
+        });
+        channel.sendToQueue("llm_queue", Buffer.from(message_content));
     } catch(err) {
         console.error("Some error occured when scraping");
         console.error(err);
@@ -106,7 +110,7 @@ connect('amqp://rabbitmq', function (error0, connection) {
             durable: false
         });
 
-        channel.prefetch(2);
+        channel.prefetch(1);
 
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
         channel.consume(queue, function (msg) {

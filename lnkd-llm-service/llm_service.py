@@ -18,7 +18,7 @@ def prompt_llm(doc: dict):
         PROMPT += f"-\tPost {index} : \"{post}\"\n"
     
     response = llm.chat(
-        model="llama3.1",
+        model="llama3.2",
         messages=[{
             "role": "system",
             "content": "Create a warm and personalized connection message using this information, highlighting common interests, a genuine compliment, or a shared professional topic if applicable. Make it friendly, concise, and authentic, ensuring that it respects LinkedIn's character limits."

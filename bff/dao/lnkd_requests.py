@@ -14,7 +14,7 @@ class RequestStatus(IntEnum):
     FAILED = 6
 
 class Post(BaseModel):
-    post_content: str = Field(...)
+    content: str = Field(...)
     time_ago: Optional[str] = Field(None)
 
 class BaseLnkdRequestModel(BaseModel):
